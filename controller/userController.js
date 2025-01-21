@@ -83,5 +83,10 @@ const editUser = async (req, res) => {
 };
 
 module.exports = {
-  getAllUsers
+  getAllUsers,
+  createUser,
+  deleteUser,
+  editUser,
+  getOneUser,
+  login
 }
