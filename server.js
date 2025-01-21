@@ -6,7 +6,7 @@ const userRouter = require('./routes/usersRouter')
 
 app.use(express.json())
 
-app.use('/user', )
+app.use('/user', userRouter)
 
 app.get('/', (req, res) => {
   res.send('my server333')
