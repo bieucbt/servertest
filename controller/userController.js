@@ -52,16 +52,15 @@ const login = async (req, res) => {
   
   const { email, password } = req.body;
   try {
-    res.json({...req.body})
-    // const user = await userModel.findOne({ email });
-    // if (!user) return res.status(401).json({ mess: 'Email không tồn tại hoặc chưa đăng ký' });
+    const user = await userModel.findOne({ email });
+    if (!user) return res.status(401).json({ mess: 'Email không tồn tại hoặc chưa đăng ký' });
 
-    // const isPasswordValid = await bcrypt.compare(password, user.password);
-    // if (!isPasswordValid) return res.status(401).json({ mess: "Mật khẩu không chính xác" });
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) return res.status(401).json({ mess: "Mật khẩu không chính xác" });
 
-    // const payload = { email: user.email, isAdmin: user.isAdmin };
-    // const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
-    // res.status(200).json({ mess: 'Đăng nhập thành công', token, isAdmin: user.isAdmin });
+    const payload = { email: user.email, isAdmin: user.isAdmin };
+    const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
+    res.status(200).json({ mess: 'Đăng nhập thành công', token, isAdmin: user.isAdmin });
   } catch (err) {
     res.status(404).json({ mess: err.message });
   }
