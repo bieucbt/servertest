@@ -9,11 +9,11 @@ app.get('/', (req, res) => {
 })
 
 // Kết nối MongoDB
-mongoose.connect(process.env.MONGDB_URL)
+mongoose.connect(process.env.MONGDB_URL) 
   .then(() => {
     console.log('Kết nối MongoDB thành công!');
-    app.listen(process.env.PORT || 3000, () => {
-      console.log('Server is running on port', process.env.PORT || 3000);
+    app.listen(process.env.PORT, () => {
+      console.log('Server is running on port', process.env.PORT);
     });
   })
   .catch((err) => {
