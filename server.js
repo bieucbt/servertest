@@ -15,7 +15,7 @@ app.use(cors())
 app.use('/user', userRouter)
 app.use('/product',productRouter)
 
-app.use('/images', express.static('upload'))
+app.use('/product/images', express.static('upload')) 
 
 app.get('/', (req, res) => {
   res.send('welcome to my server')
