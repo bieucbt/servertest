@@ -14,10 +14,11 @@ app.use(cors())
 // routes
 app.use('/user', userRouter)
 app.use('/product',productRouter)
+
 app.use('/images', express.static('upload'))
 
 app.get('/', (req, res) => {
-  res.send('my server333')
+  res.send('welcome to my server')
 })
 
 // Kết nối MongoDB
