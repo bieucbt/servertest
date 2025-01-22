@@ -8,7 +8,7 @@ router.get('/', getAllProducts)
 
 // Áp dụng middleware Multer
 router.post('/', upload.single('imgProduct'), (req, res) => {
-  res.status(201).json({body: {...req.body}, upload: [req.files]})
+  res.status(201).json({body: {...req.body}, upload: req.file})
 });
 
 module.exports = router
