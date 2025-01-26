@@ -2,6 +2,7 @@ const userModel = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const validator = require('validator')
 
 const getAllUsers = async (req, res) => {
   try {
@@ -25,16 +26,21 @@ const getOneUser = async (req, res) => {
 
 const createUser = async (req, res) => {
   const { email, password } = req.body;
-  try {
-    const match = await userModel.findOne({ email });
-    if (match) return res.status(401).json({ mess: "Email đã tồn tại" });
 
+  try {
+
+    if (!validator.isEmail(email)) {
+      throw new TypeError("Email không hợp lệ");
+    }
+    const match = await userModel.findOne({ email });
+    if (match) return res.status(401).json({ message: "Email đã tồn tại" });
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(password, salt);
     const user = await userModel.create({ email, password: hash });
-    res.status(200).json(user);
+    if (user)
+      return res.status(200).json(user);
   } catch (err) {
-    res.status(404).json({ mess: err });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -49,7 +55,7 @@ const deleteUser = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  
+
   const { email, password } = req.body;
   try {
     const user = await userModel.findOne({ email });
@@ -71,16 +77,18 @@ const editUser = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await userModel.findById(id);
+    if (!user) throw Error('Tài khoản không tồn tại')
+    if (email) user.email = email;
     if (password) {
       const salt = await bcrypt.genSalt();
       user.password = await bcrypt.hash(password, salt);
     }
-    if (email) user.email = email;
-    if (isAdmin !== undefined) user.isAdmin = isAdmin;
+    if (isAdmin) user.isAdmin = isAdmin;
     const newUser = await user.save();
-    res.status(201).json(newUser);
+    if (newUser)
+      return res.status(201).json(newUser);
   } catch (err) {
-    res.status(404).json({ mess: 'Không tìm thấy thông tin' });
+    res.status(404).json({ mess: err.message });
   }
 };
 

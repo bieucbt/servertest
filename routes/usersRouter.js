@@ -8,6 +8,6 @@ router.get('/', getAllUsers);
 router.get('/:id', getOneUser);
 router.delete('/:id', deleteUser);
 router.post('/signup', createUser);
-router.put('/editUser/:id', editUser);
+router.patch('/editUser/:id', editUser);
 
 module.exports = router
