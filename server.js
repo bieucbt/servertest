@@ -13,16 +13,15 @@ app.use(cors())
 
 // routes
 app.use('/user', userRouter)
-app.use('/product',productRouter)
+app.use('/product', productRouter)
 
-app.use('/product/images', express.static('upload')) 
 
 app.get('/', (req, res) => {
   res.send('welcome to my server')
 })
 
 // Kết nối MongoDB
-mongoose.connect(process.env.MONGDB_URL) 
+mongoose.connect(process.env.MONGDB_URL)
   .then(() => {
     console.log('Kết nối MongoDB thành công!');
     app.listen(process.env.PORT, () => {
