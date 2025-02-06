@@ -45,8 +45,8 @@ const createUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
+  const userId = req.params.id;
   try {
-    const userId = req.params.id;
     const user = await userModel.findByIdAndDelete(userId);
     res.status(204).json(user);
   } catch (err) {

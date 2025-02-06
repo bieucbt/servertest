@@ -22,8 +22,8 @@ const getOneProduct = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    // const product = await productModels.create({ ...req.body, img: req.file.filename })
-    res.status(200).json({ ...req.body, img: req.file.filename })
+    const product = await productModels.create({ ...req.body, img: req.file.filename })
+    res.status(201).json(product)
   } catch (err) {
     res.status(401).json({ message: 'Thêm sản phẩm thất bại' })
   }
