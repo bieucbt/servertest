@@ -48,7 +48,7 @@ const deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
     const user = await userModel.findByIdAndDelete(userId);
-    res.status(200).json(user);
+    res.status(204).json(user);
   } catch (err) {
     res.status(404).json({ mess: err });
   }
