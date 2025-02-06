@@ -22,8 +22,8 @@ const getOneProduct = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    const product = await productModels.create({ ...req.body, img: req.file.filename })
-    res.status(200).json(product)
+    // const product = await productModels.create({ ...req.body, img: req.file.filename })
+    res.status(200).json({ ...req.body, img: req.file.filename })
   } catch (err) {
     res.status(401).json({ message: 'Thêm sản phẩm thất bại' })
   }
@@ -42,9 +42,14 @@ const deleteProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   const { id } = req.params
   try {
-    const product = await productModels.findById(id)
-    if (product)
+    if (req.file) {
+      const product = await productModels.findByIdAndUpdate(id, { ...req.body, img: req.file.filename })
+      return res.status(200).json({ ...req.body, img: req.file.filename })
+    }
+    else {
+      const product = await productModels.findByIdAndUpdate(id, { ...req.body, img: req.body.img2 })
       return res.status(200).json(product)
+    }
   } catch (err) {
     return res.status(400).json({ message: err.message })
   }
