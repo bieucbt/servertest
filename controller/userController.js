@@ -1,6 +1,7 @@
 const userModel = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { default: mongoose } = require('mongoose');
 require('dotenv').config();
 const validator = require('validator')
 
@@ -58,15 +59,17 @@ const login = async (req, res) => {
 
   const { email, password } = req.body;
   try {
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email }).select("email _id isAdmin cart +password");
     if (!user) return res.status(401).json({ mess: 'Email không tồn tại hoặc chưa đăng ký' });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return res.status(401).json({ mess: "Mật khẩu không chính xác" });
 
-    const payload = { email: user.email, isAdmin: user.isAdmin };
+    const payload = { email: user.email, id: user._id, isAdmin: user.isAdmin, cart: user.cart };
+
     const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
-    res.status(200).json({ mess: 'Đăng nhập thành công', token, isAdmin: user.isAdmin });
+
+    res.status(200).json({ mess: 'Đăng nhập thành công', token, isAdmin: user.isAdmin, email: user.email, cart: user.cart });
   } catch (err) {
     res.status(404).json({ mess: err.message });
   }
@@ -92,11 +95,24 @@ const editUser = async (req, res) => {
   }
 };
 
+const addToCart = async (req, res) => {
+  const { cart } = req.body
+  const { id } = req.user
+  try {
+    const user = await userModel.findOneAndUpdate({ _id: id }, { $set: { cart: cart } }, { new: true, runValidators: true })
+
+    return res.status(200).json(user)
+  } catch (err) {
+    return res.status(400).json({ message: err.message })
+  }
+}
+
 module.exports = {
   getAllUsers,
   createUser,
   deleteUser,
   editUser,
   getOneUser,
-  login
+  login,
+  addToCart
 }
