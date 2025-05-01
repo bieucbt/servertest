@@ -65,11 +65,11 @@ const login = async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return res.status(401).json({ mess: "Mật khẩu không chính xác" });
 
-    const payload = { email: user.email, id: user._id, isAdmin: user.isAdmin, cart: user.cart };
+    const payload = { idUser: user._id, email: user.email, id: user._id, isAdmin: user.isAdmin, cart: user.cart };
 
     const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
 
-    res.status(200).json({ mess: 'Đăng nhập thành công', token, isAdmin: user.isAdmin, email: user.email, cart: user.cart });
+    res.status(200).json({ mess: 'Đăng nhập thành công', token, isAdmin: user.isAdmin, email: user.email, cart: user.cart, idUser: user._id });
   } catch (err) {
     res.status(404).json({ mess: err.message });
   }
@@ -106,6 +106,10 @@ const addToCart = async (req, res) => {
     return res.status(400).json({ message: err.message })
   }
 }
+
+
+
+
 
 module.exports = {
   getAllUsers,

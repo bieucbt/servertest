@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const productModels = require("../models/productModels")
 
 
@@ -55,10 +56,38 @@ const updateProduct = async (req, res) => {
   }
 }
 
+const updateCartQuantity = async (req, res) => {
+  const { cart } = req.body
+
+  try {
+    if (!cart || Object.entries(cart).length == 0) {
+      return res.status(400).json({ message: 'Cart trống, không có sản phẩm cần update.' })
+    }
+
+    const bulkOps = Object.entries(cart).map(item => {
+      return {
+        updateOne: {
+          filter: { _id: item[0] },
+          update: { $inc: { count: -item[1] } }
+        }
+      }
+    });
+
+    await productModels.bulkWrite(bulkOps);
+
+    const newProducts = await productModels.find()
+
+    res.status(200).json(newProducts);
+  } catch (err) {
+    res.status(400).json({ mess: err.message })
+  }
+}
+
 module.exports = {
   getAllProducts,
   createProduct,
   deleteProduct,
   getOneProduct,
-  updateProduct
+  updateProduct,
+  updateCartQuantity
 }

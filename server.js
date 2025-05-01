@@ -4,6 +4,7 @@ require('dotenv').config()
 const mongoose = require('mongoose');
 const userRouter = require('./routes/usersRouter')
 const productRouter = require('./routes/productRouter')
+const orderRouter = require('./routes/orderRouter')
 const cors = require('cors')
 
 
@@ -14,7 +15,7 @@ app.use(cors())
 // routes
 app.use('/user', userRouter)
 app.use('/product', productRouter)
-
+app.use('/order', orderRouter)
 
 app.get('/', (req, res) => {
   res.send('welcome to my server')
